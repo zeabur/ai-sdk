@@ -1,24 +1,157 @@
-# @zeabur/ai-sdk
+# Zeabur AI SDK
 
-Zeabur SDK for AI agents and applications. Provides unified access to all Zeabur operations for building intelligent deployment tools.
+The Zeabur AI SDK is a TypeScript toolkit designed to help you build AI-powered deployment agents and automation tools using popular frameworks like Next.js, React, and Node.js.
 
-## 🏗️ Architecture
+## Installation
 
-This SDK provides **pure tool functions** that are framework-agnostic and can be used directly in your applications:
+You will need Node.js 18+ and npm (or another package manager) installed on your local development machine.
 
-```
-@zeabur/ai-sdk/
-├── src/
-│   ├── core/           # 📦 Pure tool functions (framework-agnostic)
-│   ├── types/          # 📝 Shared TypeScript types
-│   └── examples/       # 📖 Usage examples
+```bash
+npm install @zeabur/ai-sdk
 ```
 
-## 🚀 Three Ways to Use
+## Usage
 
-### 1. 🎭 Demo Mode (Try without API token)
+### Executing Commands
 
-Perfect for testing and learning:
+```typescript
+import { zeaburTools, createZeaburContext } from '@zeabur/ai-sdk';
+
+const context = createZeaburContext('your-api-token');
+
+const result = await zeaburTools.executeCommand({
+  serviceId: 'service-123',
+  environmentId: 'env-456',
+  command: ['ls', '-la']
+}, context);
+```
+
+### Deploying from Specifications
+
+```typescript
+import { zeaburTools, createZeaburContext } from '@zeabur/ai-sdk';
+
+const context = createZeaburContext('your-api-token');
+
+const result = await zeaburTools.deployFromSpecification({
+  projectID: 'project-123',
+  specification: {
+    services: [
+      {
+        name: 'web',
+        template: 'NODEJS',
+        // ... service configuration
+      }
+    ]
+  }
+}, context);
+```
+
+### Monitoring and Logs
+
+```typescript
+import { zeaburTools } from '@zeabur/ai-sdk';
+
+// Get build logs
+const buildLogs = await zeaburTools.getBuildLogs({
+  projectID: 'project-123',
+  deploymentID: 'deploy-456'
+}, context);
+
+// Get runtime logs
+const runtimeLogs = await zeaburTools.getRuntimeLogs({
+  serviceID: 'service-123',
+  environmentID: 'env-456',
+  type: 'BUILD'
+}, context);
+
+// Get deployment history
+const deployments = await zeaburTools.getDeployments({
+  serviceId: 'service-123'
+}, context);
+```
+
+### Working with Templates
+
+```typescript
+import { zeaburTools } from '@zeabur/ai-sdk';
+
+const templates = await zeaburTools.searchTemplate({
+  query: 'nextjs'
+}, context);
+```
+
+## AI SDK Integration
+
+The Zeabur AI SDK works seamlessly with the Vercel AI SDK to build intelligent deployment agents.
+
+### Agent Example
+
+```typescript
+import { ToolLoopAgent } from 'ai';
+import { zeaburTools, createZeaburContext } from '@zeabur/ai-sdk';
+import { openai } from '@ai-sdk/openai';
+
+const zeaburContext = createZeaburContext(process.env.ZEABUR_API_TOKEN);
+
+const deploymentAgent = new ToolLoopAgent({
+  model: openai('gpt-4o'),
+  system: 'You are a Zeabur deployment assistant.',
+  tools: {
+    execute_command: {
+      description: 'Execute commands on Zeabur services',
+      inputSchema: zeaburSchemas.executeCommandSchema,
+      execute: async (input) => {
+        return await zeaburTools.executeCommand(input, zeaburContext);
+      }
+    },
+    deploy_service: {
+      description: 'Deploy services on Zeabur',
+      inputSchema: zeaburSchemas.deployFromSpecificationSchema,
+      execute: async (input) => {
+        return await zeaburTools.deployFromSpecification(input, zeaburContext);
+      }
+    }
+  }
+});
+```
+
+### Next.js API Route
+
+```typescript
+// app/api/chat/route.ts
+import { createZeaburContext, zeaburTools } from '@zeabur/ai-sdk';
+import { streamText } from 'ai';
+import { openai } from '@ai-sdk/openai';
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+  
+  const zeaburContext = createZeaburContext(
+    process.env.ZEABUR_API_TOKEN
+  );
+
+  const result = streamText({
+    model: openai('gpt-4o'),
+    messages,
+    tools: {
+      execute_command: {
+        description: 'Execute commands on services',
+        parameters: zeaburSchemas.executeCommandSchema,
+        execute: async (args) => {
+          return await zeaburTools.executeCommand(args, zeaburContext);
+        }
+      }
+    }
+  });
+
+  return result.toDataStreamResponse();
+}
+```
+
+## Demo Mode
+
+Try the SDK without authentication - perfect for testing and learning:
 
 ```typescript
 import { zeaburTools, createZeaburDemoContext } from '@zeabur/ai-sdk';
@@ -31,189 +164,56 @@ const result = await zeaburTools.executeCommand({
   environmentId: 'demo-env',
   command: ['ls', '-la']
 }, demoContext);
-// Returns: "Mock command output: Hello from demo mode!"
+
+console.log(result); // Returns: "Mock command output: Hello from demo mode!"
 ```
 
-### 2. 📦 Direct Tool Usage (Production agents)
-
-Use tools directly in your Zeabur agent:
-
-```typescript
-import { zeaburTools, createGraphQLClient } from '@zeabur/ai-sdk';
-
-const context = {
-  graphql: createGraphQLClient('your-token')
-};
-
-// Use any tool directly
-const result = await zeaburTools.executeCommand({
-  serviceId: 'service-123',
-  environmentId: 'env-456', 
-  command: ['ls', '-la']
-}, context);
-
-const deployments = await zeaburTools.getDeployments({
-  serviceId: 'service-123'
-}, context);
-
-const ui = await zeaburTools.renderServiceCard({
-  projectID: 'project-123',
-  serviceID: 'service-456'
-});
-```
-
-### 3. 🤖 AI SDK Integration
-
-Wrap tools for Vercel AI SDK (perfect for migrating existing agent):
-
-```typescript
-import { tool } from 'ai';
-import { zeaburTools, zeaburSchemas } from '@zeabur/ai-sdk';
-
-const executeCommandTool = tool({
-  name: 'execute_command',
-  description: 'Execute commands on services',
-  inputSchema: zeaburSchemas.executeCommandSchema,
-  async execute(input) {
-    return await zeaburTools.executeCommand(input, context);
-  }
-});
-
-// Use in streamText, generateText, etc.
-```
-
-
-## 🛠️ Available Tools
+## Available Tools
 
 ### Core Operations
-- **execute_command** - Execute commands on services
-- **deploy_from_specification** - Deploy from specs
-- **execute_graphql** - Run GraphQL queries
+- **executeCommand** - Execute shell commands on services
+- **deployFromSpecification** - Deploy services from YAML/JSON specifications
+- **executeGraphQL** - Run custom GraphQL queries
 
 ### File System
-- **decide_filesystem** - Choose GitHub/Upload ID
-- **list_files** - List directory contents
-- **read_file** - Read file with pagination
-- **file_dir_read** - Safe read-only commands
+- **decideFilesystem** - Determine GitHub or Upload ID
+- **listFiles** - List directory contents
+- **readFile** - Read file with pagination support
+- **fileDirRead** - Execute safe read-only commands
 
-### Monitoring  
-- **get_build_logs** - Build deployment logs
-- **get_runtime_logs** - Service runtime logs
-- **get_deployments** - Deployment history
+### Monitoring
+- **getBuildLogs** - Fetch build logs for deployments
+- **getRuntimeLogs** - Get service runtime logs
+- **getDeployments** - List deployment history
 
 ### Templates
-- **search_template** - Find deployment templates
+- **searchTemplate** - Search deployment templates
 
 ### UI Components
-- **render_region_selector** - Region selection UI
-- **render_project_selector** - Project selection UI  
-- **render_service_card** - Service status cards
-- **render_dockerfile** - Syntax-highlighted Dockerfile
-- **render_recommendation** - Recommendation buttons
-- **render_floating_button** - Floating action buttons
+- **renderRegionSelector** - Region selection interface
+- **renderProjectSelector** - Project selection interface
+- **renderServiceCard** - Service status cards
+- **renderDockerfile** - Syntax-highlighted Dockerfile viewer
+- **renderRecommendation** - Smart recommendation buttons
+- **renderFloatingButton** - Floating action buttons
 
-## 📦 Installation
+## Authentication
 
-```bash
-npm install @zeabur/ai-sdk
-```
-
-## 🔧 Migration from Existing Agent
-
-**Before** (separate tool implementations):
-```typescript
-// zeabur.com/app/api/v2/chat/route.ts
-import { executeCommandTool } from './command';
-import { deployFromSpecificationTool } from './deploy';
-// ... duplicate tool logic
-```
-
-**After** (shared SDK):
-```typescript
-// zeabur.com/app/api/v2/chat/route.ts  
-import { createZeaburContext, zeaburTools } from '@zeabur/ai-sdk';
-
-// Simple migration - pass existing token
-const context = createZeaburContext(token || process.env.DEV_ZEABUR_API_TOKEN);
-
-// Direct usage with unified SDK
-const result = await zeaburTools.executeCommand(args, context);
-```
-
-## 🔐 Authentication
-
-**This SDK is a library and does NOT read environment variables directly.** The consuming application (your agent/API route) is responsible for managing authentication.
-
-### Token Management
-
-The SDK requires a Zeabur API token to be **explicitly passed** by your application:
+The SDK requires a Zeabur API token to be explicitly passed by your application:
 
 ```typescript
-// ❌ Wrong - SDK doesn't read env vars internally
-const context = createZeaburContext();
-
-// ✅ Correct - Your application reads env vars and passes the token
+// ✅ Correct - Your application manages the token
 const token = process.env.ZEABUR_API_TOKEN;
+const context = createZeaburContext(token);
+
+// Or from cookies, headers, database, etc.
+const token = cookies().get('token')?.value;
 const context = createZeaburContext(token);
 ```
 
-### Example: Next.js API Route
+**Note:** This SDK is a library and does NOT read environment variables directly. The consuming application is responsible for managing authentication.
 
-```typescript
-// app/api/chat/route.ts
-import { createZeaburContext, zeaburTools } from '@zeabur/ai-sdk';
-import { cookies } from 'next/headers';
-
-export async function POST(req: Request) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
-  
-  // Your application handles env var fallback
-  const zeaburToken = token || process.env.DEV_ZEABUR_API_TOKEN;
-  
-  if (!zeaburToken) {
-    return new Response('Authentication required', { status: 401 });
-  }
-  
-  // Pass the token explicitly to SDK
-  const context = createZeaburContext(zeaburToken);
-  
-  // Use tools with context
-  const result = await zeaburTools.executeCommand(args, context);
-}
-```
-
-### AI Model Keys (Also handled by your application)
-
-```typescript
-// Your application manages all API keys
-const bedrock = createAmazonBedrock({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,      // ✅ Your app's responsibility
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY, // ✅ Your app's responsibility
-});
-
-const context = createZeaburContext(
-  process.env.ZEABUR_API_TOKEN  // ✅ Your app's responsibility
-);
-```
-
-### Why This Design?
-
-1. **Library Best Practice** - Libraries shouldn't access `process.env` directly
-2. **Flexibility** - You control how/where tokens come from (cookies, headers, DB, etc.)
-3. **Security** - You can implement your own token validation logic
-4. **Testing** - Easier to test by passing mock tokens
-
-## 🎯 Benefits
-
-1. **📚 Unified Codebase** - Single source of truth for all tools
-2. **🔄 No Code Duplication** - Shared logic across applications
-3. **⚡ Direct Usage** - Lightweight and fast tool execution  
-4. **🛡️ Type Safe** - Full TypeScript support
-5. **📖 Easy Migration** - Drop-in replacement for existing tools
-6. **🎭 Demo Mode** - Test without authentication
-
-## 🚀 Development
+## Development
 
 ```bash
 npm install          # Install dependencies
@@ -223,29 +223,22 @@ npm run type-check   # Type checking
 npm run lint         # Linting
 ```
 
-## 🎯 Getting Started
+## Community
 
-### Quick Try (No Setup Required)
-```bash
-git clone https://github.com/zeabur/ai-sdk
-cd ai-sdk
-npm install
-npm run demo  # Try demo mode instantly
-```
+Join the Zeabur community to ask questions, share ideas, and get help:
 
-### Production Setup
-1. 📝 Sign up at [zeabur.com](https://zeabur.com)
-2. 🔑 Get your API token from dashboard
-3. 🚀 Start building!
+- [Discord](https://discord.gg/zeabur)
+- [GitHub Discussions](https://github.com/zeabur/zeabur/discussions)
+- [Documentation](https://zeabur.com/docs)
 
-## 📁 Examples
+## Contributing
 
-Check the `examples/` directory for:
-- `demo-usage.ts` - Try without API token
-- `direct-usage.ts` - Direct tool usage
-- `ai-sdk-integration.ts` - AI SDK wrapper  
-- `zeabur-agent-migration.ts` - Migration guide
+Contributions to the Zeabur AI SDK are welcome and highly appreciated. Please check out our contributing guidelines before getting started.
 
-## 📄 License
+## Authors
+
+This library is created by the Zeabur team, with contributions from the Open Source Community.
+
+## License
 
 MIT
