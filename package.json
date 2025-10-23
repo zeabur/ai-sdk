@@ -1,6 +1,6 @@
 {
   "name": "@zeabur/ai-sdk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "description": "Zeabur SDK for AI agents and applications",
   "main": "dist/index.js",
@@ -15,7 +15,7 @@
   "author": "Zeabur",
   "license": "MIT",
   "dependencies": {
-    "zod": "^3.22.0"
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
