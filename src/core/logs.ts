@@ -3,7 +3,7 @@ import { ZeaburContext } from "../types/index.js";
 
 export const getBuildLogsSchema = z.object({
   deploymentId: z.string(),
-  limit: z.number().default(100),
+  timestampCursor: z.string().optional(),
 });
 
 export type GetBuildLogsInput = z.infer<typeof getBuildLogsSchema>;
@@ -13,18 +13,17 @@ export async function getBuildLogs(
   context: ZeaburContext
 ): Promise<string> {
   const query = `
-    query GetBuildLogs($deploymentId: ObjectID!, $limit: Int) {
-      buildLogs(deploymentID: $deploymentId, limit: $limit) {
-        timestamp
+    query BuildLogs($deploymentId: ObjectID!, $timestampCursor: Time) {
+      buildLogs(deploymentID: $deploymentId, timestampCursor: $timestampCursor) {
         message
-        level
+        timestamp
       }
     }
   `;
 
   const response = await context.graphql.query(query, {
     deploymentId: args.deploymentId,
-    limit: args.limit
+    timestampCursor: args.timestampCursor,
   });
 
   if (response.errors) {
@@ -37,7 +36,7 @@ export async function getBuildLogs(
 export const getRuntimeLogsSchema = z.object({
   serviceId: z.string(),
   environmentId: z.string(),
-  limit: z.number().default(100),
+  timestampCursor: z.string().optional(),
 });
 
 export type GetRuntimeLogsInput = z.infer<typeof getRuntimeLogsSchema>;
@@ -47,11 +46,13 @@ export async function getRuntimeLogs(
   context: ZeaburContext
 ): Promise<string> {
   const query = `
-    query GetRuntimeLogs($serviceId: ObjectID!, $environmentId: ObjectID!, $limit: Int) {
-      runtimeLogs(serviceID: $serviceId, environmentID: $environmentId, limit: $limit) {
+    query GetRuntimeLogs($serviceId: ObjectID!, $environmentId: ObjectID, $timestampCursor: Time) {
+      runtimeLogs(serviceID: $serviceId, environmentID: $environmentId, timestampCursor: $timestampCursor) {
         timestamp
         message
-        level
+        stream
+        region
+        zeaburUID
       }
     }
   `;
@@ -59,7 +60,7 @@ export async function getRuntimeLogs(
   const response = await context.graphql.query(query, {
     serviceId: args.serviceId,
     environmentId: args.environmentId,
-    limit: args.limit
+    timestampCursor: args.timestampCursor
   });
 
   if (response.errors) {
@@ -71,7 +72,7 @@ export async function getRuntimeLogs(
 
 export const getDeploymentsSchema = z.object({
   serviceId: z.string(),
-  limit: z.number().default(10),
+  environmentId: z.string().optional(),
 });
 
 export type GetDeploymentsInput = z.infer<typeof getDeploymentsSchema>;
@@ -81,13 +82,13 @@ export async function getDeployments(
   context: ZeaburContext
 ): Promise<string> {
   const query = `
-    query GetDeployments($serviceId: ObjectID!, $limit: Int) {
-      service(id: $serviceId) {
-        deployments(limit: $limit) {
+    query GetDeployments($serviceId: ObjectID!, $environmentId: ObjectID) {
+      service(_id: $serviceId) {
+        deployments(environmentID: $environmentId) {
           _id
           status
           createdAt
-          updatedAt
+          startedAt
         }
       }
     }
@@ -95,7 +96,7 @@ export async function getDeployments(
 
   const response = await context.graphql.query(query, {
     serviceId: args.serviceId,
-    limit: args.limit
+    environmentId: args.environmentId,
   });
 
   if (response.errors) {
