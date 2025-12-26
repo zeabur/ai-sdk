@@ -5,6 +5,13 @@ export * from "./graphql.js";
 export * from "./logs.js";
 export * from "./template.js";
 export * from "./render.js";
+export * from "./project.js";
+export * from "./region.js";
+export * from "./service.js";
+export * from "./port.js";
+export * from "./domain.js";
+export * from "./user.js";
+export * from "./git.js";
 
 // Re-export types for convenience
 export * from "../types/index.js";
@@ -65,7 +72,10 @@ import {
 import {
   searchTemplate,
   searchTemplateSchema,
-  type SearchTemplateInput
+  deployTemplate,
+  deployTemplateSchema,
+  type SearchTemplateInput,
+  type DeployTemplateInput
 } from "./template.js";
 
 import {
@@ -89,27 +99,107 @@ import {
   type RenderFloatingButtonInput
 } from "./render.js";
 
+import {
+  listProjects,
+  listProjectsSchema,
+  createProject,
+  createProjectSchema,
+  type ListProjectsInput,
+  type CreateProjectInput
+} from "./project.js";
+
+import {
+  listRegions,
+  listRegionsSchema,
+  type ListRegionsInput
+} from "./region.js";
+
+import {
+  listServices,
+  listServicesSchema,
+  getService,
+  getServiceSchema,
+  createService,
+  createServiceSchema,
+  type ListServicesInput,
+  type GetServiceInput,
+  type CreateServiceInput
+} from "./service.js";
+
+import {
+  updateServicePorts,
+  updateServicePortsSchema,
+  type UpdateServicePortsInput
+} from "./port.js";
+
+import {
+  addDomain,
+  addDomainSchema,
+  type AddDomainInput
+} from "./domain.js";
+
+import {
+  getMe,
+  getMeSchema,
+  type GetMeInput
+} from "./user.js";
+
+import {
+  getRepoId,
+  getRepoIdSchema,
+  searchGitRepos,
+  searchGitReposSchema,
+  type GetRepoIdInput,
+  type SearchGitReposInput
+} from "./git.js";
+
 // Collection of all tools for easy access
 export const zeaburTools = {
   // Core functionality
   executeCommand,
   deployFromSpecification,
   executeGraphql,
-  
+
   // File system
   decideFilesystem,
   listFiles,
   readFile,
   fileDirRead,
-  
+
   // Monitoring
   getBuildLogs,
   getRuntimeLogs,
   getDeployments,
-  
+
   // Templates
   searchTemplate,
-  
+  deployTemplate,
+
+  // Projects
+  listProjects,
+  createProject,
+
+  // Regions
+  listRegions,
+
+  // Services
+  listServices,
+  getService,
+  createService,
+
+  // Ports
+  updateServicePorts,
+
+  // Domains
+  addDomain,
+
+  // User
+  getMe,
+
+  // Git
+  getRepoId,
+  searchGitRepos,
+
   // UI Rendering
   renderRegionSelector,
   renderProjectSelector,
@@ -132,6 +222,18 @@ export const zeaburSchemas = {
   getRuntimeLogsSchema,
   getDeploymentsSchema,
   searchTemplateSchema,
+  deployTemplateSchema,
+  listProjectsSchema,
+  createProjectSchema,
+  listRegionsSchema,
+  listServicesSchema,
+  getServiceSchema,
+  createServiceSchema,
+  updateServicePortsSchema,
+  addDomainSchema,
+  getMeSchema,
+  getRepoIdSchema,
+  searchGitReposSchema,
   renderRegionSelectorSchema,
   renderProjectSelectorSchema,
   renderServiceCardSchema,
