@@ -1,6 +1,6 @@
 {
   "name": "@zeabur/ai-sdk",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "type": "module",
   "description": "Zeabur SDK for AI agents and applications",
   "main": "dist/index.js",
@@ -11,20 +11,26 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts"
   },
-  "keywords": ["zeabur", "ai", "sdk", "tools", "agent"],
+  "keywords": [
+    "zeabur",
+    "ai",
+    "sdk",
+    "tools",
+    "agent"
+  ],
   "author": "Zeabur",
   "license": "MIT",
   "dependencies": {
-    "zod": "^4.0.0"
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "tsx": "^4.0.0",
-    "eslint": "^8.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
-    "ai": "^5.0.0"
+    "ai": "^5.0.0",
+    "eslint": "^8.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
     "ai": "^5.0.0"
