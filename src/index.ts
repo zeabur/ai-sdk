@@ -25,11 +25,14 @@ export function createGraphQLClient(token: string, endpoint = 'https://api.zeabu
         }),
       });
 
+      const result = await response.json() as { data: T; errors?: any[] };
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorMsg = result.errors ? JSON.stringify(result.errors) : `HTTP error! status: ${response.status}`;
+        throw new Error(errorMsg);
       }
 
-      return await response.json() as { data: T; errors?: any[] };
+      return result;
     },
 
     async getUserInfo() {
