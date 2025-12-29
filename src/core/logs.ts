@@ -67,7 +67,7 @@ export async function getRuntimeLogs(
 
 export const getDeploymentsSchema = z.object({
   serviceId: z.string().describe("The service ID to get deployments for. Get this from listServices or getService."),
-  environmentId: z.string().optional().describe("Optional environment ID to filter deployments. Get this from listProjects (in project.environments)."),
+  environmentId: z.string().describe("The environment ID to get deployments for. Get this from listProjects (in project.environments)."),
 });
 
 export type GetDeploymentsInput = z.infer<typeof getDeploymentsSchema>;
