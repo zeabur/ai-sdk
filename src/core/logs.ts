@@ -77,7 +77,7 @@ export async function getDeployments(
   context: ZeaburContext
 ): Promise<string> {
   const query = `
-    query GetDeployments($serviceId: ObjectID!, $environmentId: ObjectID) {
+    query GetDeployments($serviceId: ObjectID!, $environmentId: ObjectID!) {
       deployments(serviceID: $serviceId, environmentID: $environmentId) {
         edges {
           node {
