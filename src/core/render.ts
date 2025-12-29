@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const renderRegionSelectorSchema = z.object({
-  showServers: z.boolean(),
+  showServers: z.boolean().describe("Whether to show dedicated servers in addition to shared regions."),
 });
 
 export type RenderRegionSelectorInput = z.infer<typeof renderRegionSelectorSchema>;
@@ -16,7 +16,7 @@ export async function renderRegionSelector(
 }
 
 export const renderProjectSelectorSchema = z.object({
-  showCreateNew: z.boolean(),
+  showCreateNew: z.boolean().describe("Whether to show the 'Create New Project' option."),
 });
 
 export type RenderProjectSelectorInput = z.infer<typeof renderProjectSelectorSchema>;
@@ -31,8 +31,8 @@ export async function renderProjectSelector(
 }
 
 export const renderServiceCardSchema = z.object({
-  projectID: z.string(),
-  serviceID: z.string(),
+  projectID: z.string().describe("The project ID that contains the service."),
+  serviceID: z.string().describe("The service ID to display."),
 });
 
 export type RenderServiceCardInput = z.infer<typeof renderServiceCardSchema>;
@@ -48,8 +48,8 @@ export async function renderServiceCard(
 }
 
 export const renderDockerfileSchema = z.object({
-  dockerfile: z.string(),
-  language: z.string().default("dockerfile"),
+  dockerfile: z.string().describe("The Dockerfile content to display."),
+  language: z.string().default("dockerfile").describe("The syntax highlighting language. Defaults to 'dockerfile'."),
 });
 
 export type RenderDockerfileInput = z.infer<typeof renderDockerfileSchema>;
@@ -66,8 +66,8 @@ export async function renderDockerfile(
 
 export const renderRecommendationSchema = z.object({
   options: z.array(z.object({
-    label: z.string(),
-  })),
+    label: z.string().describe("The label text for this recommendation option."),
+  })).describe("Array of recommendation options to display."),
 });
 
 export type RenderRecommendationInput = z.infer<typeof renderRecommendationSchema>;
@@ -82,10 +82,10 @@ export async function renderRecommendation(
 }
 
 export const renderFloatingButtonSchema = z.object({
-  url: z.string(),
-  title: z.string().optional(),
-  description: z.string().optional(),
-  isExternal: z.boolean().default(true),
+  url: z.string().describe("The URL to navigate to when clicked."),
+  title: z.string().optional().describe("The button title text."),
+  description: z.string().optional().describe("Optional description text below the title."),
+  isExternal: z.boolean().default(true).describe("Whether to open in a new tab. Defaults to true."),
 });
 
 export type RenderFloatingButtonInput = z.infer<typeof renderFloatingButtonSchema>;

@@ -2,8 +2,8 @@ import { z } from "zod";
 import { ZeaburContext } from "../types/index.js";
 
 export const getBuildLogsSchema = z.object({
-  deploymentId: z.string(),
-  timestampCursor: z.string().optional(),
+  deploymentId: z.string().describe("The deployment ID to get build logs for. Get this from getDeployments."),
+  timestampCursor: z.string().optional().describe("Optional cursor for pagination. Use the timestamp from the last log entry to get more logs."),
 });
 
 export type GetBuildLogsInput = z.infer<typeof getBuildLogsSchema>;
@@ -34,9 +34,9 @@ export async function getBuildLogs(
 }
 
 export const getRuntimeLogsSchema = z.object({
-  serviceId: z.string(),
-  environmentId: z.string(),
-  timestampCursor: z.string().optional(),
+  serviceId: z.string().describe("The service ID to get runtime logs for. Get this from listServices or getService."),
+  deploymentId: z.string().describe("The deployment ID (required). Get this from getDeployments."),
+  timestampCursor: z.string().optional().describe("Optional cursor for pagination."),
 });
 
 export type GetRuntimeLogsInput = z.infer<typeof getRuntimeLogsSchema>;
@@ -46,21 +46,16 @@ export async function getRuntimeLogs(
   context: ZeaburContext
 ): Promise<string> {
   const query = `
-    query GetRuntimeLogs($serviceId: ObjectID!, $environmentId: ObjectID, $timestampCursor: Time) {
-      runtimeLogs(serviceID: $serviceId, environmentID: $environmentId, timestampCursor: $timestampCursor) {
-        timestamp
+    query GetRuntimeLogs($serviceId: ObjectID!, $deploymentId: ObjectID!) {
+      runtimeLogs(serviceID: $serviceId, deploymentID: $deploymentId) {
         message
-        stream
-        region
-        zeaburUID
       }
     }
   `;
 
   const response = await context.graphql.query(query, {
     serviceId: args.serviceId,
-    environmentId: args.environmentId,
-    timestampCursor: args.timestampCursor
+    deploymentId: args.deploymentId,
   });
 
   if (response.errors) {
@@ -71,8 +66,8 @@ export async function getRuntimeLogs(
 }
 
 export const getDeploymentsSchema = z.object({
-  serviceId: z.string(),
-  environmentId: z.string().optional(),
+  serviceId: z.string().describe("The service ID to get deployments for. Get this from listServices or getService."),
+  environmentId: z.string().optional().describe("Optional environment ID to filter deployments. Get this from listProjects (in project.environments)."),
 });
 
 export type GetDeploymentsInput = z.infer<typeof getDeploymentsSchema>;
@@ -83,12 +78,14 @@ export async function getDeployments(
 ): Promise<string> {
   const query = `
     query GetDeployments($serviceId: ObjectID!, $environmentId: ObjectID) {
-      service(_id: $serviceId) {
-        deployments(environmentID: $environmentId) {
-          _id
-          status
-          createdAt
-          startedAt
+      deployments(serviceID: $serviceId, environmentID: $environmentId) {
+        edges {
+          node {
+            _id
+            status
+            createdAt
+            startedAt
+          }
         }
       }
     }

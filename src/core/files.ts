@@ -120,12 +120,12 @@ export function decideFilesystemFromSchema(graphql: GraphQLClient, source: any):
 }
 
 export const decideFilesystemSchema = z.object({
-  type: z.enum(["GITHUB", "UPLOAD_ID"]),
+  type: z.enum(["GITHUB", "UPLOAD_ID"]).describe("The filesystem source type."),
   github: z.object({
-    repo_id: z.number(),
-    ref: z.string().optional(),
-  }).optional(),
-  upload_id: z.string().optional(),
+    repo_id: z.number().describe("The GitHub repository ID. Get this from getRepoId."),
+    ref: z.string().optional().describe("Optional git ref (branch, tag, or commit SHA)."),
+  }).optional().describe("Required when type is 'GITHUB'."),
+  upload_id: z.string().optional().describe("Required when type is 'UPLOAD_ID'. The upload ID from file upload."),
 });
 
 export type DecideFilesystemInput = z.infer<typeof decideFilesystemSchema>;
@@ -140,9 +140,9 @@ export async function decideFilesystem(
 }
 
 export const listFilesSchema = z.object({
-  path: z.string(),
-  limit: z.number().max(64).default(64),
-  offset: z.number().default(0),
+  path: z.string().describe("The directory path to list files from, e.g. '/' or '/src'."),
+  limit: z.number().max(64).default(64).describe("Maximum number of files to return. Defaults to 64."),
+  offset: z.number().default(0).describe("Number of files to skip for pagination. Defaults to 0."),
 });
 
 export type ListFilesInput = z.infer<typeof listFilesSchema>;
@@ -160,9 +160,9 @@ export async function listFiles(
 }
 
 export const readFileSchema = z.object({
-  path: z.string(),
-  limit: z.number().max(1024).default(256),
-  offset: z.number().default(0),
+  path: z.string().describe("The file path to read, e.g. '/package.json' or '/src/index.ts'."),
+  limit: z.number().max(1024).default(256).describe("Maximum number of characters to return. Defaults to 256. Set to 0 to read entire file."),
+  offset: z.number().default(0).describe("Character position to start reading from. Defaults to 0."),
 });
 
 export type ReadFileInput = z.infer<typeof readFileSchema>;
@@ -211,9 +211,9 @@ export async function readFile(
 }
 
 export const fileDirReadSchema = z.object({
-  serviceId: z.string(),
-  environmentId: z.string(),
-  command: z.array(z.string()),
+  serviceId: z.string().describe("The service ID to execute command on. Get this from listServices or getService."),
+  environmentId: z.string().describe("The environment ID where the service is deployed. Get this from the project's environment."),
+  command: z.array(z.string()).describe("The command to execute as an array, e.g. ['ls', '-la'] or ['cat', '/app/config.json']. Only read-only commands are allowed: ls, cat, head, tail, find, grep, tree, pwd, whoami, which, file."),
 });
 
 export type FileDirReadInput = z.infer<typeof fileDirReadSchema>;

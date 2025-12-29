@@ -11,32 +11,32 @@ mutation DeployFromSpecification($serviceId: ObjectID!, $specification: Deployme
 `;
 
 const sourceSchema = z.object({
-  type: z.enum(["GITHUB", "UPLOAD_ID"]),
+  type: z.enum(["GITHUB", "UPLOAD_ID"]).describe("The source type for building."),
   github: z.object({
-    repo_id: z.number(),
-    ref: z.string().optional(),
-  }).optional(),
-  upload_id: z.string().optional(),
+    repo_id: z.number().describe("The GitHub repository ID. Get this from getRepoId."),
+    ref: z.string().optional().describe("Optional git ref (branch, tag, or commit SHA)."),
+  }).optional().describe("Required when type is 'GITHUB'."),
+  upload_id: z.string().optional().describe("Required when type is 'UPLOAD_ID'."),
 });
 
 export const deployFromSpecificationSchema = z.object({
-  service_id: z.string(),
+  service_id: z.string().describe("The service ID to deploy to. Get this from listServices or createService."),
   source: z.object({
-    type: z.enum(["BUILD_FROM_SOURCE", "DOCKER_IMAGE"]),
+    type: z.enum(["BUILD_FROM_SOURCE", "DOCKER_IMAGE"]).describe("The deployment source type."),
     build_from_source: z.object({
       source: sourceSchema,
       dockerfile: z.object({
-        content: z.string().nullable().optional(),
-        path: z.string().nullable().optional(),
-      }),
-    }).optional(),
-    docker_image: z.string().optional(),
-  }),
+        content: z.string().nullable().optional().describe("The Dockerfile content directly."),
+        path: z.string().nullable().optional().describe("The path to Dockerfile in the source (e.g., '/Dockerfile')."),
+      }).describe("Dockerfile specification. Provide either 'content' or 'path'."),
+    }).optional().describe("Required when type is 'BUILD_FROM_SOURCE'."),
+    docker_image: z.string().optional().describe("Required when type is 'DOCKER_IMAGE'. The Docker image to deploy (e.g., 'nginx:latest')."),
+  }).describe("The deployment source configuration."),
   env: z.array(z.object({
-    key: z.string(),
-    value: z.string(),
-    expose: z.boolean().default(false),
-  })),
+    key: z.string().describe("Environment variable name."),
+    value: z.string().describe("Environment variable value."),
+    expose: z.boolean().default(false).describe("Whether to expose this variable publicly."),
+  })).describe("Environment variables for the deployment."),
 });
 
 export type DeployFromSpecificationInput = z.infer<typeof deployFromSpecificationSchema>;

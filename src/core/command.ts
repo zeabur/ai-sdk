@@ -4,9 +4,9 @@ import { ZeaburContext, ExecuteCommandResult } from "../types/index.js";
 const MAX_COMMAND_RESPONSE_LENGTH = 2048;
 
 export const executeCommandSchema = z.object({
-  serviceId: z.string(),
-  environmentId: z.string(),
-  command: z.array(z.string())
+  serviceId: z.string().describe("The service ID to execute command on. Get this from listServices or getService."),
+  environmentId: z.string().describe("The environment ID where the service is deployed. Get this from listProjects (in project.environments)."),
+  command: z.array(z.string()).describe("The command to execute as an array, e.g. ['npm', 'install'] or ['python', 'script.py'].")
 });
 
 export type ExecuteCommandInput = z.infer<typeof executeCommandSchema>;
