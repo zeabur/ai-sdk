@@ -12,6 +12,7 @@ export * from "./port.js";
 export * from "./domain.js";
 export * from "./user.js";
 export * from "./git.js";
+export * from "./variable.js";
 
 // Re-export types for convenience
 export * from "../types/index.js";
@@ -153,6 +154,21 @@ import {
   type SearchGitReposInput
 } from "./git.js";
 
+import {
+  createEnvironmentVariable,
+  createEnvironmentVariableSchema,
+  updateEnvironmentVariable,
+  updateEnvironmentVariableSchema,
+  deleteEnvironmentVariable,
+  deleteEnvironmentVariableSchema,
+  getServiceVariables,
+  getServiceVariablesSchema,
+  type CreateEnvironmentVariableInput,
+  type UpdateEnvironmentVariableInput,
+  type DeleteEnvironmentVariableInput,
+  type GetServiceVariablesInput
+} from "./variable.js";
+
 // Collection of all tools for easy access
 export const zeaburTools = {
   // Core functionality
@@ -200,6 +216,12 @@ export const zeaburTools = {
   getRepoId,
   searchGitRepos,
 
+  // Environment Variables
+  createEnvironmentVariable,
+  updateEnvironmentVariable,
+  deleteEnvironmentVariable,
+  getServiceVariables,
+
   // UI Rendering
   renderRegionSelector,
   renderProjectSelector,
@@ -234,6 +256,10 @@ export const zeaburSchemas = {
   getMeSchema,
   getRepoIdSchema,
   searchGitReposSchema,
+  createEnvironmentVariableSchema,
+  updateEnvironmentVariableSchema,
+  deleteEnvironmentVariableSchema,
+  getServiceVariablesSchema,
   renderRegionSelectorSchema,
   renderProjectSelectorSchema,
   renderServiceCardSchema,
