@@ -1,6 +1,6 @@
 {
   "name": "@zeabur/ai-sdk",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "type": "module",
   "description": "Zeabur SDK for AI agents and applications",
   "main": "dist/index.js",

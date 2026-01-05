@@ -230,8 +230,8 @@ export async function fileDirRead(
   }
 
   const query = `
-    mutation ExecuteCommand($serviceId: ObjectID!, $environmentId: ObjectID!, $command: [String!]!) {
-      executeCommand(serviceID: $serviceId, environmentID: $environmentId, command: $command) {
+    mutation ExecuteCommand($serviceID: ObjectID!, $environmentID: ObjectID!, $command: [String!]!) {
+      executeCommand(serviceID: $serviceID, environmentID: $environmentID, command: $command) {
         exitCode
         output
       }
@@ -239,8 +239,8 @@ export async function fileDirRead(
   `;
 
   const variables = {
-    serviceId: args.serviceId,
-    environmentId: args.environmentId,
+    serviceID: args.serviceId,
+    environmentID: args.environmentId,
     command: args.command
   };
 
