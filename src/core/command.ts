@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { ZeaburContext, ExecuteCommandResult } from "../types/index.js";
 
 const MAX_COMMAND_RESPONSE_LENGTH = 2048;

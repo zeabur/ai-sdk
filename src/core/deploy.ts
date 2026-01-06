@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { ZeaburContext, DeployFromSpecificationSpecification } from "../types/index.js";
 import { decideFilesystemFromSchema } from "./files.js";
 
