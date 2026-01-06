@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const renderRegionSelectorSchema = z.object({
   showServers: z.boolean().describe("Whether to show dedicated servers in addition to shared regions."),

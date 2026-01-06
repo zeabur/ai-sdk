@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { ZeaburContext } from "../types/index.js";
 
 export const getBuildLogsSchema = z.object({
