@@ -13,6 +13,7 @@ export * from "./domain.js";
 export * from "./user.js";
 export * from "./git.js";
 export * from "./variable.js";
+export * from "./status.js";
 
 // Re-export types for convenience
 export * from "../types/index.js";
@@ -169,6 +170,12 @@ import {
   type GetServiceVariablesInput
 } from "./variable.js";
 
+import {
+  waitForServicesRunning,
+  waitForServicesRunningSchema,
+  type WaitForServicesRunningInput
+} from "./status.js";
+
 // Collection of all tools for easy access
 export const zeaburTools = {
   // Core functionality
@@ -229,6 +236,9 @@ export const zeaburTools = {
   renderDockerfile,
   renderRecommendation,
   renderFloatingButton,
+
+  // Status
+  waitForServicesRunning,
 };
 
 // Collection of all schemas
@@ -266,4 +276,5 @@ export const zeaburSchemas = {
   renderDockerfileSchema,
   renderRecommendationSchema,
   renderFloatingButtonSchema,
+  waitForServicesRunningSchema,
 };
