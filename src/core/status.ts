@@ -168,7 +168,10 @@ export async function waitForServicesRunning(
       return JSON.stringify(result);
     }
 
-    // Wait before next poll
-    await sleep(pollInterval);
+    // Wait before next poll, clamping to remaining time to avoid overshooting timeout
+    const remaining = timeout - elapsedTime;
+    if (remaining > 0) {
+      await sleep(Math.min(pollInterval, remaining));
+    }
   }
 }
