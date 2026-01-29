@@ -29,11 +29,27 @@ export const ServiceStatus = {
 const FAILED_STATUSES = [ServiceStatus.CRASHED, ServiceStatus.PULL_FAILED];
 
 // Schema definition
-export const waitForServicesRunningSchema = z.object({
-  serviceIds: z.array(z.string()).describe("List of service IDs to wait for"),
-  timeout: z.number().default(300000).describe("Maximum wait time in ms (default: 5 min)"),
-  pollInterval: z.number().default(5000).describe("Poll interval in ms (default: 5 sec)"),
-});
+export const waitForServicesRunningSchema = z
+  .object({
+    serviceIds: z
+      .array(z.string())
+      .nonempty("At least one service ID is required")
+      .describe("List of service IDs to wait for"),
+    timeout: z
+      .number()
+      .positive("Timeout must be greater than 0")
+      .default(300000)
+      .describe("Maximum wait time in ms (default: 5 min)"),
+    pollInterval: z
+      .number()
+      .positive("Poll interval must be greater than 0")
+      .default(5000)
+      .describe("Poll interval in ms (default: 5 sec)"),
+  })
+  .refine((data) => data.timeout >= data.pollInterval, {
+    message: "Timeout must be greater than or equal to pollInterval",
+    path: ["timeout"],
+  });
 
 export type WaitForServicesRunningInput = z.infer<typeof waitForServicesRunningSchema>;
 
