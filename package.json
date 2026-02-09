@@ -20,6 +20,10 @@
   ],
   "author": "Zeabur",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zeabur/ai-sdk.git"
+  },
   "devDependencies": {
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/github": "^12.0.3",
