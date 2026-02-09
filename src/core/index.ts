@@ -3,6 +3,7 @@ export * from "./command.js";
 export * from "./files.js";
 export * from "./graphql.js";
 export * from "./logs.js";
+export * from "./metrics.js";
 export * from "./template.js";
 export * from "./render.js";
 export * from "./project.js";
@@ -70,6 +71,12 @@ import {
   type GetRuntimeLogsInput,
   type GetDeploymentsInput
 } from "./logs.js";
+
+import {
+  getServerMetrics,
+  getServerMetricsSchema,
+  type GetServerMetricsInput
+} from "./metrics.js";
 
 import {
   searchTemplate,
@@ -193,6 +200,7 @@ export const zeaburTools = {
   getBuildLogs,
   getRuntimeLogs,
   getDeployments,
+  getServerMetrics,
 
   // Templates
   searchTemplate,
@@ -253,6 +261,7 @@ export const zeaburSchemas = {
   getBuildLogsSchema,
   getRuntimeLogsSchema,
   getDeploymentsSchema,
+  getServerMetricsSchema,
   searchTemplateSchema,
   deployTemplateSchema,
   listProjectsSchema,
