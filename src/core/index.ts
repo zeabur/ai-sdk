@@ -75,7 +75,10 @@ import {
 import {
   getServerMetrics,
   getServerMetricsSchema,
-  type GetServerMetricsInput
+  getServiceMetrics,
+  getServiceMetricsSchema,
+  type GetServerMetricsInput,
+  type GetServiceMetricsInput
 } from "./metrics.js";
 
 import {
@@ -201,6 +204,7 @@ export const zeaburTools = {
   getRuntimeLogs,
   getDeployments,
   getServerMetrics,
+  getServiceMetrics,
 
   // Templates
   searchTemplate,
@@ -262,6 +266,7 @@ export const zeaburSchemas = {
   getRuntimeLogsSchema,
   getDeploymentsSchema,
   getServerMetricsSchema,
+  getServiceMetricsSchema,
   searchTemplateSchema,
   deployTemplateSchema,
   listProjectsSchema,
