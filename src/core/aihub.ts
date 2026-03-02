@@ -83,6 +83,7 @@ mutation CreateAIHubKey($alias: String) {
       alias
       cost
     }
+    apiKey
   }
 }
 `;
