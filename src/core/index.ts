@@ -15,6 +15,7 @@ export * from "./user.js";
 export * from "./git.js";
 export * from "./variable.js";
 export * from "./status.js";
+export * from "./aihub.js";
 
 // Re-export types for convenience
 export * from "../types/index.js";
@@ -186,6 +187,21 @@ import {
   type WaitForServicesRunningInput
 } from "./status.js";
 
+import {
+  getAIHubTenant,
+  getAIHubTenantSchema,
+  getAIHubMonthlyUsage,
+  getAIHubMonthlyUsageSchema,
+  createAIHubKey,
+  createAIHubKeySchema,
+  deleteAIHubKey,
+  deleteAIHubKeySchema,
+  type GetAIHubTenantInput,
+  type GetAIHubMonthlyUsageInput,
+  type CreateAIHubKeyInput,
+  type DeleteAIHubKeyInput
+} from "./aihub.js";
+
 // Collection of all tools for easy access
 export const zeaburTools = {
   // Core functionality
@@ -251,6 +267,12 @@ export const zeaburTools = {
 
   // Status
   waitForServicesRunning,
+
+  // AI Hub
+  getAIHubTenant,
+  getAIHubMonthlyUsage,
+  createAIHubKey,
+  deleteAIHubKey,
 };
 
 // Collection of all schemas
@@ -291,4 +313,8 @@ export const zeaburSchemas = {
   renderRecommendationSchema,
   renderFloatingButtonSchema,
   waitForServicesRunningSchema,
+  getAIHubTenantSchema,
+  getAIHubMonthlyUsageSchema,
+  createAIHubKeySchema,
+  deleteAIHubKeySchema,
 };
