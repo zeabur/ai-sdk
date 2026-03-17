@@ -51,7 +51,7 @@ mutation CreateProject($name: String!, $region: String!) {
 
 export const createProjectSchema = z.object({
   name: z.string().describe("Name of the project (alphanumeric, 4-16 chars, hyphens allowed, must start with letter)"),
-  region: z.string().describe("Region code for the project. Use 'listRegions' to get available regions. For dedicated servers, use 'server-{SERVER_ID}' format."),
+  region: z.string().describe("Region code for the project. Use 'listRegions' to get available servers. Use 'server-{SERVER_ID}' format."),
 });
 
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;

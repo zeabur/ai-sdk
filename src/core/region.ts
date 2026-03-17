@@ -1,25 +1,6 @@
 import { z } from "zod/v4";
 import { ZeaburContext } from "../types/index.js";
 
-const LIST_REGIONS_QUERY = `
-query ListRegions {
-  regions {
-    id
-    code
-    name
-    description
-    available
-    continent
-    country
-    city
-    providerInfo {
-      name
-      code
-    }
-  }
-}
-`;
-
 const LIST_SERVERS_QUERY = `
 query ListServers {
   servers {
@@ -58,25 +39,15 @@ export async function listRegions(
   args: ListRegionsInput,
   context: ZeaburContext
 ): Promise<string> {
-  const regionsResponse = await context.graphql.query(LIST_REGIONS_QUERY);
+  const serversResponse = await context.graphql.query(LIST_SERVERS_QUERY);
 
-  if (regionsResponse.errors) {
-    throw new Error(JSON.stringify(regionsResponse.errors));
+  if (serversResponse.errors) {
+    throw new Error(JSON.stringify(serversResponse.errors));
   }
 
   const result: any = {
-    regions: regionsResponse.data.regions,
+    servers: serversResponse.data.servers,
   };
-
-  if (args.includeServers) {
-    const serversResponse = await context.graphql.query(LIST_SERVERS_QUERY);
-
-    if (serversResponse.errors) {
-      throw new Error(JSON.stringify(serversResponse.errors));
-    }
-
-    result.servers = serversResponse.data.servers;
-  }
 
   return JSON.stringify(result);
 }
