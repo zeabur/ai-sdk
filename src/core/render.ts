@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 
 export const renderRegionSelectorSchema = z.object({
-  showServers: z.boolean().describe("Whether to show dedicated servers in addition to shared regions."),
+  showServers: z.boolean().describe("Whether to show dedicated servers. Shared clusters are no longer supported — only dedicated servers and user-bound machines are available."),
 });
 
 export type RenderRegionSelectorInput = z.infer<typeof renderRegionSelectorSchema>;
