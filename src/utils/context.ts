@@ -10,10 +10,12 @@ import { createDemoContext } from "./demo.js";
  */
 export function createZeaburContext(
   token: string,
-  endpoint?: string
+  endpoint?: string,
+  ragApiKey?: string
 ): ZeaburContext {
   return {
-    graphql: createGraphQLClient(token, endpoint)
+    graphql: createGraphQLClient(token, endpoint),
+    ragApiKey,
   };
 }
 

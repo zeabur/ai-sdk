@@ -16,6 +16,7 @@ export * from "./git.js";
 export * from "./variable.js";
 export * from "./status.js";
 export * from "./aihub.js";
+export * from "./rag.js";
 
 // Re-export types for convenience
 export * from "../types/index.js";
@@ -202,6 +203,18 @@ import {
   type DeleteAIHubKeyInput
 } from "./aihub.js";
 
+import {
+  queryZeaburKnowledgeBase,
+  queryZeaburKnowledgeBaseSchema,
+  reportKnowledgeIssue,
+  reportKnowledgeIssueSchema,
+  contributeNewKnowledge,
+  contributeNewKnowledgeSchema,
+  type QueryZeaburKnowledgeBaseInput,
+  type ReportKnowledgeIssueInput,
+  type ContributeNewKnowledgeInput
+} from "./rag.js";
+
 // Collection of all tools for easy access
 export const zeaburTools = {
   // Core functionality
@@ -273,6 +286,11 @@ export const zeaburTools = {
   getAIHubMonthlyUsage,
   createAIHubKey,
   deleteAIHubKey,
+
+  // RAG Knowledge Base
+  queryZeaburKnowledgeBase,
+  reportKnowledgeIssue,
+  contributeNewKnowledge,
 };
 
 // Collection of all schemas
@@ -317,4 +335,7 @@ export const zeaburSchemas = {
   getAIHubMonthlyUsageSchema,
   createAIHubKeySchema,
   deleteAIHubKeySchema,
+  queryZeaburKnowledgeBaseSchema,
+  reportKnowledgeIssueSchema,
+  contributeNewKnowledgeSchema,
 };

@@ -21,6 +21,7 @@ export interface Filesystem {
 export interface ZeaburContext {
   graphql: GraphQLClient;
   filesystem?: Filesystem;
+  ragApiKey?: string;
 }
 
 export interface DeployFromSpecificationInput {
