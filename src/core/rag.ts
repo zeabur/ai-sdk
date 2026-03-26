@@ -10,22 +10,30 @@ function getRagApiKey(context: ZeaburContext): string {
   return context.ragApiKey;
 }
 
-async function ragFetch(path: string, body: Record<string, any>, apiKey: string): Promise<any> {
-  const response = await fetch(`${RAG_BASE_URL}${path}`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+async function ragFetch(path: string, body: Record<string, any>, apiKey: string, timeoutMs = 30000): Promise<any> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`RAG API error (${response.status}): ${text}`);
+  try {
+    const response = await fetch(`${RAG_BASE_URL}${path}`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`RAG API error (${response.status}): ${text}`);
+    }
+
+    return response.json();
+  } finally {
+    clearTimeout(timeoutId);
   }
-
-  return response.json();
 }
 
 // Query Zeabur Knowledge Base

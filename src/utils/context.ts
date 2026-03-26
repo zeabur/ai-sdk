@@ -6,6 +6,7 @@ import { createDemoContext } from "./demo.js";
  * Create a Zeabur context with authentication
  * @param token - Zeabur API token (required - must be provided by your application)
  * @param endpoint - GraphQL endpoint (optional, defaults to 'https://api.zeabur.com/graphql')
+ * @param ragApiKey - RAG knowledge base API key (optional)
  * @throws Error if token is not provided
  */
 export function createZeaburContext(
@@ -24,10 +25,12 @@ export function createZeaburContext(
  * @param graphqlClient - Pre-configured GraphQL client
  */
 export function createZeaburContextFromClient(
-  graphqlClient: GraphQLClient
+  graphqlClient: GraphQLClient,
+  ragApiKey?: string
 ): ZeaburContext {
   return {
-    graphql: graphqlClient
+    graphql: graphqlClient,
+    ragApiKey,
   };
 }
 
