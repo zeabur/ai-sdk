@@ -53,6 +53,12 @@ export async function queryZeaburKnowledgeBase(
     query: args.query,
     top_k: args.top_k ?? 5,
   }, apiKey);
+  // Forum tickets are private, so their links 404 for anyone but the author.
+  if (Array.isArray(result?.chunks)) {
+    for (const chunk of result.chunks) {
+      if (chunk?.source === "forum") delete chunk.url;
+    }
+  }
   return JSON.stringify(result);
 }
 
